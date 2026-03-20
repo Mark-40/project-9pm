@@ -8,8 +8,8 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 ENV NEXT_TELEMETRY_DISABLED=1
-ENV NEXT_PUBLIC_API_URL=https://project-9pm-production.up.railway.app
-ENV NEXT_PUBLIC_WS_URL=wss://project-9pm-production.up.railway.app/ws
+ENV NEXT_PUBLIC_API_URL=https://genuine-kindness-production.up.railway.app
+ENV NEXT_PUBLIC_WS_URL=wss://genuine-kindness-production.up.railway.app/ws
 RUN npm run build
 
 FROM node:20-alpine AS runner
