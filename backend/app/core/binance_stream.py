@@ -12,6 +12,7 @@ from app.core.ic_engine import ICEngine
 from app.core.kline_buffer import KlineBuffer
 from app.core.ml_engine import MLEngine
 from app.core.signal_generator import SignalGenerator
+from app.core.slack_notifier import SlackNotifier
 from app.core.ta_engine import TAEngine
 from app.core.trade_logger import TradeLogger
 from app.models.schemas import TAResult
@@ -53,6 +54,7 @@ class BinanceStreamManager:
         ic_cache: Dict[str, Dict[str, float]],
         executor: ThreadPoolExecutor,
         trade_logger: Optional[TradeLogger] = None,
+        slack_notifier: Optional[SlackNotifier] = None,
     ):
         self.settings = settings
         self.buffers = buffers
@@ -66,6 +68,7 @@ class BinanceStreamManager:
         self.ic_cache = ic_cache
         self.executor = executor
         self.trade_logger = trade_logger
+        self.slack_notifier = slack_notifier
         self._running = False
 
         self._prev_ta: Dict[str, Optional[TAResult]] = {s: None for s in settings.SYMBOLS}
@@ -262,6 +265,22 @@ class BinanceStreamManager:
         }
 
         await self.conn_manager.broadcast(symbol, payload)
+
+        # Send Slack notification for BUY/SELL signals
+        if self.slack_notifier and signal.action != "HOLD":
+            await self.slack_notifier.send_signal(
+                symbol=symbol,
+                action=signal.action,
+                price=price,
+                strength=signal.strength,
+                quality_score=signal.quality_score,
+                quality_label=signal.quality_label,
+                source=signal.source,
+                take_profit=signal.take_profit,
+                stop_loss=signal.stop_loss,
+                risk_reward=signal.risk_reward,
+                macro_trend=signal.macro_trend,
+            )
 
         # Record signal + resolve past outcomes in trade log
         if self.trade_logger and signal.action != "HOLD":

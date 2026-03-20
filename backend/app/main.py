@@ -18,6 +18,7 @@ from app.core.ic_engine import ICEngine
 from app.core.kline_buffer import KlineBuffer
 from app.core.ml_engine import MLEngine
 from app.core.signal_generator import SignalGenerator
+from app.core.slack_notifier import SlackNotifier
 from app.core.ta_engine import TAEngine
 from app.core.trade_logger import TradeLogger
 
@@ -131,6 +132,7 @@ async def lifespan(app: FastAPI):
     conn_manager = ConnectionManager()
     trade_logger = TradeLogger(settings.TRADE_LOG_PATH)
     ic_engine = ICEngine()
+    slack_notifier = SlackNotifier(webhook_url=settings.SLACK_WEBHOOK_URL)
     latest_signals: dict = {}
     ic_cache: Dict[str, Dict[str, float]] = {}
 
@@ -241,6 +243,7 @@ async def lifespan(app: FastAPI):
         ic_cache=ic_cache,
         executor=executor,
         trade_logger=trade_logger,
+        slack_notifier=slack_notifier,
     )
     stream_task = asyncio.create_task(stream.run())
     app.state.stream_task = stream_task
@@ -261,6 +264,7 @@ async def lifespan(app: FastAPI):
             await task
         except asyncio.CancelledError:
             pass
+    await slack_notifier.close()
     executor.shutdown(wait=False)
     logger.info("[Shutdown] Complete")
 

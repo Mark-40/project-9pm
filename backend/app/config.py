@@ -1,9 +1,11 @@
 from pydantic_settings import BaseSettings
-from typing import List
+from typing import List, Optional
 
 
 class Settings(BaseSettings):
     BINANCE_WS_URL: str = "wss://stream.binance.com:9443/stream"
+    # Slack notifications
+    SLACK_WEBHOOK_URL: Optional[str] = None
     BINANCE_REST_URL: str = "https://api.binance.com"
     SYMBOLS: List[str] = [
         "BTCUSDT", "ETHUSDT", "SOLUSDT", "BNBUSDT", "XRPUSDT",
