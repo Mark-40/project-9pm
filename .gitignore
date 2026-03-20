@@ -15,6 +15,7 @@ node_modules/
 .next/
 out/
 .env.local
+.env
 
 # OS
 .DS_Store
