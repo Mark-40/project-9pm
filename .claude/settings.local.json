@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(ls /c/Users/MarkManzanilla/Documents/Personal_Hub/nextjs-inventory/app/\\\\\\(site\\\\\\))",
+      "Bash(ls /c/Users/MarkManzanilla/Documents/Personal_Hub/nextjs-inventory/app/\\\\\\(site\\\\\\)/dashboard && ls /c/Users/MarkManzanilla/Documents/Personal_Hub/nextjs-inventory/hooks)",
+      "Bash(dir \"C:\\\\Users\\\\MarkManzanilla\\\\Documents\\\\Personal_Hub\\\\crypto-trader\")",
+      "Bash(find C:UsersMarkManzanillaDocumentsPersonal_Hubcrypto-trader -type f \\\\\\(-name *paper* -o -name *demo* -o -name *portfolio* -o -name *trade* \\\\\\))"
+    ]
+  }
+}
